@@ -1,0 +1,5 @@
+vendor
+wpcs
+composer.json
+composer.lock
+.vscode
