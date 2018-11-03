@@ -166,6 +166,10 @@ function createInputTitleElement( $title, $field_reqired) {
 }
 
 function formDataValidation() {
+    if ( empty( $_POST) ) {
+        return false;
+    }
+    /*
     $data = getData();
     foreach( $data as $field ) {
         if ( $field['required'] ) {
@@ -179,7 +183,7 @@ function formDataValidation() {
             }
 
         }
-    }
+    }*/
     return true;
 }
 
