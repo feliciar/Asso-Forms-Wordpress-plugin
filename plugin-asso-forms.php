@@ -3,6 +3,10 @@
 Plugin Name: Assö Anmälan
 */
 
+include( plugin_dir_path( __FILE__ ) . 'database/get-form-data.php');
+include( plugin_dir_path( __FILE__ ) . 'database/send-form-data.php');
+include( plugin_dir_path( __FILE__ ) . 'forms/build-form.php');
+
 /**
  * This should be called outside of page, when a get or post param is set.
  */
@@ -22,191 +26,8 @@ function downloadCSV() {
     exit();
 }
 
-function getTableData() {
-    global $wpdb;
-    //$table_name = $wpdb->prefix .'users';
-    $table_name = 'test';
-
-    $results = $wpdb->get_results( "SELECT text FROM $table_name");
-    echo 'results: ' . $results;
-    if(!empty($results)) {
-        foreach($results as $row){
-            echo $row->text . '<br>';
-        }
-    }
-}
-
-function insertTableData() {
-    global $wpdb;
-    $table_name = 'test';
-
-    $wpdb->insert( 
-        $table_name, 
-        array( 
-            'text' => $_GET['testget'], 
-        ) 
-    );
-}
-
-function createForm() {
-    ?>
-    * Obligatoriskt fält
-    <form action="" method="post">
-        <?php
-
-        $data = getData();
-        foreach($data as $field) {
-            if ($field['field_type'] === 'text_input') {
-                createTextInputElement( $field['title'], $field['reference'], $field['placeholder'], $field['required'] );
-            }
-            if ($field['field_type'] === 'integer_input') {
-                createIntegerInputElement( $field['title'], $field['reference'], $field['placeholder'], $field['required'] );
-            }
-            if ($field['field_type'] === 'text_area') {
-                createTextAreaElement( $field['title'], $field['reference'], $field['required'] );
-            }
-            if ($field['field_type'] === 'checkbox') {
-                creatCheckboxElement( $field['title'], $field['reference'], $field['required'] );
-            }
-            if ($field['field_type'] === 'radio_buttons') {
-                createRadioButtonsElement( $field['title'], $field['reference'], $field['options'], $field['required'] );
-            }
-            if ($field['field_type'] === 'dropdown') {
-                createSelectElement( $field['title'], $field['reference'], $field['options'], $field['required'] );
-            }
-            if ($field['field_type'] === 'allergy_selector') {
-                createAllergySelectorElement( $field['title'], $field['reference'], $field['options'], $field['required'] );
-            }
-        }
-        ?>
-        
-        <br>
-        
-        <!-- TODO: captcha-->
-        <input type="submit">
-    </form>
-    <?
-}
-
-function createSelectElement( $title, $name, $options, $required ) {
-    createInputTitleElement( $title, $required );
-    ?>
-    <select name=<?php echo $name; ?>>
-        <?php
-        foreach( $options as $option ) {
-            $selected = $_POST[$name] === $option['value'];
-            echo '<option value=' . $option['value'] . ($selected ? ' selected' : '') . '>' . $option['display_name'] . '</option>';
-        }
-        ?>
-    </select>
-    <br>
-    <?php
-}
-
-function createTextInputElement( $title, $name, $place_holder, $required ) {
-    createInputTitleElement( $title, $required );
-    $value = isset( $_POST[$name] ) ? htmlspecialchars($_POST[$name]) : '';
-    echo '<input type="text" name=' . $name . ' placeholder="' . $place_holder . '" value="' . $value . '">';
-    echo '<br>';
-}
-
-function createIntegerInputElement( $title, $name, $place_holder, $required ) {
-    echo $title . ($required ? '*' : '' ) . '<br>';
-    $value = isset( $_POST[$name] ) ? htmlspecialchars($_POST[$name]) : '';
-    echo '<input type="number" name=' . $name . ' placeholder="' . $place_holder . '" value="' . $value . '">';
-    echo '<br>';
-}
-
-function createRadioButtonsElement( $title, $name, $options, $required ) {
-    createInputTitleElement( $title, $required );
-    foreach( $options as $option ) {
-        $checked = isset( $_POST[$name] ) && $_POST[$name] === $option['value'];
-        createSingleRadioButtonElement( $name, $option['value'], $option['display_name'], $checked);
-    }
-    echo '<br>';
-}
-
-function createSingleRadioButtonElement( $name, $value, $display_name, $checked ) {
-    echo '<input type="radio" name="' . $name . '" value="' . $value . '"' . ($checked ? ' checked' : '') . '> ' . $display_name . '<br>';
-}
-
-function createTextAreaElement( $title, $name, $required ) {
-    createInputTitleElement( $title, $required );
-    $value = isset( $_POST[$name] ) ? htmlspecialchars($_POST[$name]) : '';
-    ?>
-    <textarea style="text-align:left; margin:0; width:99%; max-width:250px; height:120px;" 
-        id="" name=<?php echo $name ?> cols="30" rows="10"><?php echo $value; ?></textarea>
-    <br>
-    <?php
-}
-
-function creatCheckboxElement( $title, $name, $required ) {
-    $checked = isset( $_POST[$name] );
-    echo '<input type="checkbox" name=' . $name . ' value=' . 1 . ($checked ? ' checked' : '') . '> ';
-    createInputTitleElement( $title, $required );
-    echo '<br>';
-}
-
-function createAllergySelectorElement( $title, $name, $options, $required ) {
-    createInputTitleElement( $title, $required );
-    foreach( $options as $option ) {
-        $checked = isset( $_POST[$name . '_' . $option['value']] );
-        createSingleAllergySelectorElement( $name, $option['value'], $option['display_name'], $checked);
-    }
-}
-
-function createSingleAllergySelectorElement( $name, $value, $display_name, $checked ) {
-    echo '<input type="checkbox" name=' . $name . '_' . $value . ' value=' . 1 . ($checked ? ' checked' : '') . '> ';
-    echo $display_name;
-    echo '<br>';
-}
-
-function createInputTitleElement( $title, $field_reqired) {
-    echo $title . ($field_reqired ? '*' : '' ) . '<br>';
-}
-
-function formDataValidation() {
-    if ( empty( $_POST) ) {
-        return false;
-    }
-    /*
-    $data = getData();
-    foreach( $data as $field ) {
-        if ( $field['required'] ) {
-            if ( empty( $_POST[$field['reference']] ) ) {
-                return false;
-            }
-        }
-        if ( ! empty( $field['required_format'] ) ) {
-            if ( ! preg_match( $field['required_format'], $_POST[$field['reference']] ) ) {
-                return false;
-            }
-
-        }
-    }*/
-    return true;
-}
-
-function getData() {
+function getDataOld() {
     $data = array();
-
-    global $wpdb;
-    $table_name = $wpdb->prefix .'assoforms_form_field';
-
-    $results = $wpdb->get_results( "SELECT * FROM $table_name");
-    echo 'results: ' . $results;
-    if(!empty($results)) {
-        foreach($results as $row){
-            $data[] = array( 
-                'reference' => $row->reference,
-                'field_type' => $row->field_type,
-                'title' => $row->title,
-                'placeholder' => $row->placeholder_text,
-            );
-        }
-    }
-
-    return $data;
 
     $data[] = array(
         'reference'=> 'full_name',
@@ -521,61 +342,10 @@ function getData() {
     return $data;
 }
 
-function sendDataToDatabase() {
-    global $wpdb;
-    $table_prefix = $wpdb->prefix .'assoforms_';
-
-    $table_name_signup = $table_prefix . 'signup';
-
-    $form_id = 0;
-    $year = 2019;
-
-    // Create new signup in signup table
-    $wpdb->insert( 
-        $table_name_signup, 
-        array( 
-            'form_id' => $form_id, 
-            'year' => $year,
-        )
-    );
-    $signup_id = $wpdb->get_var( $wpdb->prepare("SELECT id FROM `$table_name_signup` WHERE `form_id` = %d AND `year` = %s ORDER BY id DESC", $form_id, $year));
-
-    $table_name_response = $table_prefix . 'response';
-    $table_name_form_fields = $table_prefix . 'form_field';
-    $table_name_signup_x_responses = $table_prefix . 'signup_x_responses';
-
-    $data = getData();
-    foreach($data as $field) {
-        // Create new response in response table
-        $field_reference = $field['reference'];
-        $field_id = $wpdb->get_var( $wpdb->prepare("SELECT id FROM `$table_name_form_fields` WHERE `reference` = %s", $field_reference));
-        $response = $_POST[$field_reference];
-        $wpdb->insert(
-            $table_name_response, 
-            array(
-                'field_id' => $field_id, 
-                'response' => $response,
-            ),
-            array('%d', '%s')
-        );
-
-        // Create new signup - response connection
-        $response_id = $wpdb->get_var( $wpdb->prepare("SELECT id FROM `$table_name_response` WHERE `field_id` = %d AND `response` = %s ORDER BY id DESC", $field_id, $response));
-        $wpdb->insert(
-            $table_name_signup_x_responses, 
-            array(
-                'signup_id' => $signup_id, 
-                'response_id' => $response_id,
-            ),
-            array('%d', '%s')
-        );
-    }
-}
-
 add_shortcode('asso-form', function () {
     echo '<h1>Anmälan</h1>';
 
-    if (formDataValidation()) {
+    if (function_exists('formDataValidation') && formDataValidation()) {
         sendDataToDatabase();
         // TODO: send to database
         echo 'Tack för din anmälan!';
