@@ -27,7 +27,7 @@ function sendDataToDatabase() {
 
     $table_name_signup = $table_prefix . 'signup';
 
-    $form_id = 0;
+    $form_id = 1;
     $year = 2019;
 
     // Create new signup in signup table
