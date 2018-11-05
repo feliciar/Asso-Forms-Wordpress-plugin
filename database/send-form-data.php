@@ -47,6 +47,7 @@ function sendDataToDatabase() {
     $data = getData();
     foreach($data as $field) {
         // Create new response in response table
+        // TODO use a unique id instead of a reference
         $field_reference = $field['reference'];
         $field_id = $wpdb->get_var( $wpdb->prepare("SELECT id FROM `$table_name_form_fields` WHERE `reference` = %s", $field_reference));
         $response = $_POST[$field_reference];
