@@ -1,5 +1,5 @@
 <?php
-function getData() {
+function getFormDataFromDatabase() {
 
     $data = array();
     

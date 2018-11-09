@@ -6,7 +6,7 @@ function createForm() {
     <form action="" method="post">
         <?php
 
-        $data = getData();
+        $data = getFormDataFromDatabase();
         foreach($data as $field) {
             if ($field['field_type'] === 'text_input') {
                 createTextInputElement( $field['title'], $field['reference'], $field['placeholder'], $field['required'] );

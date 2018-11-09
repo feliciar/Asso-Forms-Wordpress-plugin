@@ -4,7 +4,7 @@ function formDataValidation() {
         return false;
     }
     /*
-    $data = getData();
+    $data = getFormDataFromDatabase();
     foreach( $data as $field ) {
         if ( $field['required'] ) {
             if ( empty( $_POST[$field['reference']] ) ) {
@@ -44,7 +44,7 @@ function sendDataToDatabase() {
     $table_name_form_fields = $table_prefix . 'form_field';
     $table_name_signup_x_responses = $table_prefix . 'signup_x_responses';
 
-    $data = getData();
+    $data = getFormDataFromDatabase();
     foreach($data as $field) {
         // Create new response in response table
         // TODO use a unique id instead of a reference
