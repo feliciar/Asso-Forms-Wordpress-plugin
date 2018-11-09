@@ -46,3 +46,44 @@ function getFormDataFromDatabase() {
     
     return $data;
 }
+
+function getSignUpDataFromDatabase() {
+    global $wpdb;
+    $prefix = $wpdb->prefix .'assoforms_';
+
+    $table_singup =             $prefix . 'signup';
+    $table_singup_x_responses = $prefix . 'signup_x_responses';
+    $table_response =           $prefix . 'response';
+    $table_forms_x_fields =         $prefix . 'forms_x_fields';
+    $table_form_field =         $prefix . 'form_field';
+
+
+    $form_id = 1;
+    $year = 2019;
+
+    $titles = $wpdb->get_results( "SELECT DISTINCT title, field_id FROM $table_singup 
+    INNER JOIN $table_forms_x_fields ON $table_singup.form_id=$table_forms_x_fields.form_id
+    INNER JOIN $table_form_field ON $table_forms_x_fields.form_field_id=$table_form_field.id
+    WHERE $table_singup.form_id=$form_id AND year=$year" );
+
+    foreach($titles as $row){
+        echo $row->title . '<br>';
+    }
+
+    $results = $wpdb->get_results( "SELECT title, response, info_type, signup_id, field_id FROM $table_singup 
+        INNER JOIN $table_singup_x_responses ON $table_singup.id=$table_singup_x_responses.signup_id
+        INNER JOIN $table_response ON $table_singup_x_responses.response_id=$table_response.id
+        INNER JOIN $table_form_field ON $table_response.field_id = $table_form_field.id
+        WHERE form_id=$form_id AND year=$year ORDER BY signup_id" );
+
+    foreach($results as $row){
+        $signup_id = $row->signup_id;
+        echo $signup_id . '<br>';
+        echo $row->field_id . '<br>';
+        echo $row->title . '<br>';
+        echo $row->response . '<br>';
+    }
+
+
+    
+}

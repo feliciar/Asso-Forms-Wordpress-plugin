@@ -347,9 +347,10 @@ add_shortcode('asso-form', function () {
 
     if (function_exists('formDataValidation') && formDataValidation()) {
         sendDataToDatabase();
-        // TODO: send to database
         echo 'Tack för din anmälan!';
+        getSignUpDataFromDatabase();
     } else {
         createForm();
+        getSignUpDataFromDatabase();
     }
 });
