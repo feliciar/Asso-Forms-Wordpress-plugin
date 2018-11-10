@@ -1,12 +1,12 @@
 <?php
 
-function createForm() {
+function createForm($form_id, $year) {
     ?>
     * Obligatoriskt fält
     <form action="" method="post">
         <?php
 
-        $data = getFormDataFromDatabase();
+        $data = getFormDataFromDatabase($form_id, $year);
         foreach($data as $field) {
             if ($field['field_type'] === 'text_input') {
                 createTextInputElement( $field['title'], $field['reference'], $field['placeholder'], $field['required'] );

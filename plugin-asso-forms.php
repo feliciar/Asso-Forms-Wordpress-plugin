@@ -342,15 +342,18 @@ function getDataOld() {
     return $data;
 }
 
-add_shortcode('asso-form', function () {
+add_shortcode('asso-form', function ($atts, $content, $tag) {
+    if ( ! isset($atts['form-id']) || ! isset($atts['year'])  ) {
+        return;
+    }
     echo '<h1>Anmälan</h1>';
 
     if (function_exists('formDataValidation') && formDataValidation()) {
-        sendDataToDatabase();
+        sendDataToDatabase($atts['form-id'], $atts['year']);
         echo 'Tack för din anmälan!';
-        getSignUpDataFromDatabase();
+        getSignUpDataFromDatabase($atts['form-id'], $atts['year']);
     } else {
-        createForm();
-        getSignUpDataFromDatabase();
+        createForm($atts['form-id'], $atts['year']);
+        getSignUpDataFromDatabase($atts['form-id'], $atts['year']);
     }
 });

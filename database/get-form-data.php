@@ -1,5 +1,5 @@
 <?php
-function getFormDataFromDatabase() {
+function getFormDataFromDatabase($form_id, $year) {
 
     $data = array();
     
@@ -9,8 +9,6 @@ function getFormDataFromDatabase() {
     $table_name = $wpdb->prefix .'assoforms_form_field';
     $table_field_x_options = $wpdb->prefix .'assoforms_form_fields_x_options';
     $table_options = $wpdb->prefix .'assoforms_option';
-
-    $form_id = 1;
 
     $results = $wpdb->get_results( 
         "SELECT $table_name.id, reference, field_type, title, placeholder_text, `required`, required_format 
@@ -47,7 +45,7 @@ function getFormDataFromDatabase() {
     return $data;
 }
 
-function getSignUpDataFromDatabase() {
+function getSignUpDataFromDatabase($form_id, $year) {
     global $wpdb;
     $prefix = $wpdb->prefix .'assoforms_';
 
@@ -57,32 +55,70 @@ function getSignUpDataFromDatabase() {
     $table_forms_x_fields =         $prefix . 'forms_x_fields';
     $table_form_field =         $prefix . 'form_field';
 
-
-    $form_id = 1;
-    $year = 2019;
-
-    $titles = $wpdb->get_results( "SELECT DISTINCT title, field_id FROM $table_singup 
+    $form_fields = $wpdb->get_results( "SELECT DISTINCT title, form_field_id FROM $table_singup 
     INNER JOIN $table_forms_x_fields ON $table_singup.form_id=$table_forms_x_fields.form_id
     INNER JOIN $table_form_field ON $table_forms_x_fields.form_field_id=$table_form_field.id
-    WHERE $table_singup.form_id=$form_id AND year=$year" );
+    WHERE $table_singup.form_id=$form_id AND year=$year ORDER BY form_field_id" );
 
-    foreach($titles as $row){
-        echo $row->title . '<br>';
-    }
+    ?>
+    <table>
+        <tr>
+            <?php
+            foreach($form_fields as $row){
+                ?>
+                <th>
+                    <?php echo $row->title; ?>
+                </th>
+                <?php
+            }
+        ?>
+        </tr>
+    <?php
 
     $results = $wpdb->get_results( "SELECT title, response, info_type, signup_id, field_id FROM $table_singup 
         INNER JOIN $table_singup_x_responses ON $table_singup.id=$table_singup_x_responses.signup_id
         INNER JOIN $table_response ON $table_singup_x_responses.response_id=$table_response.id
         INNER JOIN $table_form_field ON $table_response.field_id = $table_form_field.id
-        WHERE form_id=$form_id AND year=$year ORDER BY signup_id" );
+        WHERE form_id=$form_id AND year=$year ORDER BY signup_id, field_id" );
 
+    $signup_id = $results[0]->signup_id;
+    $column_index = 0;
+    $num_columns = count($form_fields);
+    echo '<tr>';
     foreach($results as $row){
+        if ( $signup_id !== $row->signup_id) {
+            while ($column_index < $num_columns) {
+                echo '<td></td>';
+                $column_index++;
+            }
+
+            echo '</tr><tr>';
+            $column_index = 0;
+        }
+        
+        while ( $form_fields[$column_index]->form_field_id !== $row->field_id && $column_index < $num_columns ) {
+            echo '<td></td>';
+            $column_index++;
+        }
+        
+        echo '<td>';
+        echo $row->response;
+        echo '</td>';
+        
+        $column_index++;
         $signup_id = $row->signup_id;
-        echo $signup_id . '<br>';
-        echo $row->field_id . '<br>';
-        echo $row->title . '<br>';
-        echo $row->response . '<br>';
     }
+    while ($column_index < $num_columns) {
+        echo '<td></td>';
+        $column_index++;
+    }
+
+    echo '</tr>';
+
+    ?>
+    </table>
+    <?php
+
 
 
     

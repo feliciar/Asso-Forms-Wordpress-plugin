@@ -21,14 +21,11 @@ function formDataValidation() {
     return true;
 }
 
-function sendDataToDatabase() {
+function sendDataToDatabase($form_id, $year) {
     global $wpdb;
     $table_prefix = $wpdb->prefix .'assoforms_';
 
     $table_name_signup = $table_prefix . 'signup';
-
-    $form_id = 1;
-    $year = 2019;
 
     // Create new signup in signup table
     $wpdb->insert( 
@@ -44,7 +41,7 @@ function sendDataToDatabase() {
     $table_name_form_fields = $table_prefix . 'form_field';
     $table_name_signup_x_responses = $table_prefix . 'signup_x_responses';
 
-    $data = getFormDataFromDatabase();
+    $data = getFormDataFromDatabase($form_id, $year);
     foreach($data as $field) {
         // Create new response in response table
         // TODO use a unique id instead of a reference
