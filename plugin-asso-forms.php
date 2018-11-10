@@ -343,6 +343,40 @@ function getDataOld() {
 }
 
 add_shortcode('asso-form', function ($atts, $content, $tag) {
+    global $wpdb;
+    $table_prefix = $wpdb->prefix .'assoforms_';
+    $table_form = $table_prefix . 'form';
+    $table_forms_x_fields = $table_prefix . 'forms_x_fields';
+    $table_form_field = $table_prefix . 'form_field';
+    $table_fields_x_options = $table_prefix . 'fields_x_options';
+    $table_option = $table_prefix . 'option';
+
+    $form_id = 1;
+
+    $data = getDataOld();
+
+    foreach($data as $field) {
+        $form_field = $wpdb->get_results( 
+            "SELECT id
+                FROM $table_form_field 
+                WHERE $table_form_field.reference=$field->reference");
+        if (count($form_field) === 0) {
+            $wpdb->insert(
+                $table_form_field, 
+                array(
+                    'reference' => $field['reference'], 
+                    'field_type' => $field['field_type'],
+                    'title' => $field['title'],
+                    'placeholder' => $field['placeholder_text']
+                ),
+                array('%s', '%s', '%s', '%s')
+            );
+        }
+    }
+
+
+
+
     if ( ! isset($atts['form-id']) || ! isset($atts['year'])  ) {
         return;
     }
