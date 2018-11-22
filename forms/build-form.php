@@ -79,7 +79,7 @@ function createRadioButtonsElement( $title, $name, $options, $required ) {
 }
 
 function createSingleRadioButtonElement( $name, $value, $display_name, $checked ) {
-    echo '<input type="radio" name="' . $name . '" value="' . $value . '"' . ($checked ? ' checked' : '') . '> ' . $display_name . '<br>';
+    echo '<input type="radio" name="' . $name . '" value="' . $display_name . '"' . ($checked ? ' checked' : '') . '> ' . $display_name . '<br>';
 }
 
 function createTextAreaElement( $title, $name, $required ) {
@@ -102,13 +102,13 @@ function creatCheckboxElement( $title, $name, $required ) {
 function createAllergySelectorElement( $title, $name, $options, $required ) {
     createInputTitleElement( $title, $required );
     foreach( $options as $option ) {
-        $checked = isset( $_POST[$name . '_' . $option['value']] );
+        $checked = isset( $_POST[$name][$option['value']] );
         createSingleAllergySelectorElement( $name, $option['value'], $option['display_name'], $checked);
     }
 }
 
 function createSingleAllergySelectorElement( $name, $value, $display_name, $checked ) {
-    echo '<input type="checkbox" name=' . $name . '_' . $value . ' value=' . 1 . ($checked ? ' checked' : '') . '> ';
+    echo '<input type="checkbox" name=' . $name . '[]' . ' value=' . $display_name . ($checked ? ' checked' : '') . '> ';
     echo $display_name;
     echo '<br>';
 }

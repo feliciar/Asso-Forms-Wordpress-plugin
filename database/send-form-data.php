@@ -78,6 +78,9 @@ function sendDataToDatabase($form_id, $year) {
         $field_id = $wpdb->get_var( $wpdb->prepare("SELECT id FROM `$table_name_form_fields` WHERE `reference` = %s", $field_reference));
         $response = $_POST[$field_reference] ?: '';
 
+        if ( is_array($response ) ) {
+            $response = implode(";", $response);
+        }
 
         $response_id = insertIntoTableAndGetId(
             $table_name_response, 
