@@ -6,25 +6,7 @@ Plugin Name: Assö Anmälan
 include( plugin_dir_path( __FILE__ ) . 'database/get-form-data.php');
 include( plugin_dir_path( __FILE__ ) . 'database/send-form-data.php');
 include( plugin_dir_path( __FILE__ ) . 'forms/build-form.php');
-
-/**
- * This should be called outside of page, when a get or post param is set.
- */
-function downloadCSV() {
-    $csv_output = "Felicia Rosell, Gårdvägen 9, André Strömsjåäö\nLuïc Karlsson,18245-12456,felcia@hej.hej";
-
-    header("Expires: 0");
-    header("Cache-Control: no-cache, no-store, must-revalidate"); 
-    header('Cache-Control: pre-check=0, post-check=0, max-age=0', false); 
-    header("Pragma: no-cache");	
-    header("Content-type: text/csv");
-    header("Content-type: text/csv");
-    header("Content-Disposition:attachment; filename=test.csv");
-    header("Content-Type: application/force-download");
-    
-    echo mb_convert_encoding($csv_output, 'UTF-16LE', 'UTF-8');
-    exit();
-}
+include( plugin_dir_path( __FILE__ ) . 'print-form-data.php');
 
 function getDataOld() {
     $data = array();
@@ -454,10 +436,17 @@ function insertFormDataIntoDatabase() {
 }
 
 add_shortcode('asso-form', function ($atts, $content, $tag) {
-
     if ( ! isset($atts['form-id']) || ! isset($atts['year'])  ) {
         return;
     }
+
+    ?>
+    <form action="" method="post">
+        <input type="text" name="filename" value="läger" style="display: none">
+        <input type="submit" name="get_csv" value="Ladda ner anmälningsdata">
+    </form>
+    <?php
+
     echo '<h1>Anmälan</h1>';
 
     if (function_exists('formDataValidation') && formDataValidation()) {
