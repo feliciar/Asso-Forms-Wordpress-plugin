@@ -46,6 +46,8 @@ function getFormDataFromDatabase($form_id, $year) {
 }
 
 function getSignUpDataFromDatabase($form_id, $year) {
+    $return_string = '';
+
     global $wpdb;
     $prefix = $wpdb->prefix .'assoforms_';
 
@@ -60,20 +62,10 @@ function getSignUpDataFromDatabase($form_id, $year) {
     INNER JOIN $table_form_field ON $table_forms_x_fields.form_field_id=$table_form_field.id
     WHERE $table_singup.form_id=$form_id AND year=$year ORDER BY form_field_id" );
 
-    ?>
-    <table>
-        <tr>
-            <?php
-            foreach($form_fields as $row){
-                ?>
-                <th>
-                    <?php echo $row->title; ?>
-                </th>
-                <?php
-            }
-        ?>
-        </tr>
-    <?php
+    foreach($form_fields as $row){
+        $return_string .= $row->title . ';';
+    }
+    $return_string .= "\n";
 
     $results = $wpdb->get_results( "SELECT title, response, info_type, signup_id, field_id FROM $table_singup 
         INNER JOIN $table_singup_x_responses ON $table_singup.id=$table_singup_x_responses.signup_id
@@ -84,42 +76,32 @@ function getSignUpDataFromDatabase($form_id, $year) {
     $signup_id = $results[0]->signup_id;
     $column_index = 0;
     $num_columns = count($form_fields);
-    echo '<tr>';
     foreach($results as $row){
         if ( $signup_id !== $row->signup_id) {
             while ($column_index < $num_columns) {
-                echo '<td></td>';
+                $return_string .= ';';
                 $column_index++;
             }
 
-            echo '</tr><tr>';
+            $return_string .= "\n";
             $column_index = 0;
         }
         
         while ( $form_fields[$column_index]->form_field_id !== $row->field_id && $column_index < $num_columns ) {
-            echo '<td></td>';
+            $return_string .= ';';
             $column_index++;
         }
         
-        echo '<td>';
-        echo $row->response;
-        echo '</td>';
+        $return_string .= $row->response;
+        $return_string .= ';';
         
         $column_index++;
         $signup_id = $row->signup_id;
     }
     while ($column_index < $num_columns) {
-        echo '<td></td>';
+        $return_string .= ';';
         $column_index++;
     }
 
-    echo '</tr>';
-
-    ?>
-    </table>
-    <?php
-
-
-
-    
+    return $return_string;
 }
