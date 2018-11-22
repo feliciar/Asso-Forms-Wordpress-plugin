@@ -51,11 +51,13 @@ function getSignUpDataFromDatabase($form_id, $year) {
     global $wpdb;
     $prefix = $wpdb->prefix .'assoforms_';
 
-    $table_singup =             $prefix . 'signup';
-    $table_singup_x_responses = $prefix . 'signup_x_responses';
-    $table_response =           $prefix . 'response';
+    $table_singup =                 $prefix . 'signup';
+    $table_singup_x_responses =     $prefix . 'signup_x_responses';
+    $table_response =               $prefix . 'response';
     $table_forms_x_fields =         $prefix . 'forms_x_fields';
-    $table_form_field =         $prefix . 'form_field';
+    $table_form_field =             $prefix . 'form_field';
+    $table_form_fields_x_options =  $prefix . 'form_fields_x_options';
+    $table_option =  $prefix . 'option';
 
     $form_fields = $wpdb->get_results( "SELECT DISTINCT title, form_field_id FROM $table_singup 
     INNER JOIN $table_forms_x_fields ON $table_singup.form_id=$table_forms_x_fields.form_id
@@ -67,11 +69,14 @@ function getSignUpDataFromDatabase($form_id, $year) {
     }
     $return_string .= "\n";
 
-    $results = $wpdb->get_results( "SELECT title, response, info_type, signup_id, field_id FROM $table_singup 
+    $results = $wpdb->get_results( "SELECT DISTINCT title, response, info_type, signup_id, field_id, $table_option.display_name FROM $table_singup 
         INNER JOIN $table_singup_x_responses ON $table_singup.id=$table_singup_x_responses.signup_id
         INNER JOIN $table_response ON $table_singup_x_responses.response_id=$table_response.id
         INNER JOIN $table_form_field ON $table_response.field_id = $table_form_field.id
-        WHERE form_id=$form_id AND year=$year ORDER BY signup_id, field_id" );
+        LEFT JOIN $table_form_fields_x_options ON $table_form_field.id = $table_form_fields_x_options.form_field_id
+        LEFT JOIN $table_option ON $table_form_fields_x_options.option_id = $table_option.id
+        WHERE form_id=$form_id AND year=$year AND (option_id IS NULL OR $table_response.response = $table_option.reference ) 
+        ORDER BY signup_id, field_id" );
 
     $signup_id = $results[0]->signup_id;
     $column_index = 0;
@@ -92,7 +97,7 @@ function getSignUpDataFromDatabase($form_id, $year) {
             $column_index++;
         }
         
-        $return_string .= $row->response;
+        $return_string .= $row->display_name ?: $row->response;
         $return_string .= ';';
         
         $column_index++;
