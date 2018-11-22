@@ -69,13 +69,11 @@ function getSignUpDataFromDatabase($form_id, $year) {
     }
     $return_string .= "\n";
 
-    $results = $wpdb->get_results( "SELECT DISTINCT title, response, info_type, signup_id, field_id, $table_option.display_name FROM $table_singup 
+    $results = $wpdb->get_results( "SELECT DISTINCT title, response, info_type, signup_id, field_id FROM $table_singup 
         INNER JOIN $table_singup_x_responses ON $table_singup.id=$table_singup_x_responses.signup_id
         INNER JOIN $table_response ON $table_singup_x_responses.response_id=$table_response.id
         INNER JOIN $table_form_field ON $table_response.field_id = $table_form_field.id
-        LEFT JOIN $table_form_fields_x_options ON $table_form_field.id = $table_form_fields_x_options.form_field_id
-        LEFT JOIN $table_option ON $table_form_fields_x_options.option_id = $table_option.id
-        WHERE form_id=$form_id AND year=$year AND (option_id IS NULL OR $table_response.response = $table_option.reference ) 
+        WHERE form_id=$form_id AND year=$year
         ORDER BY signup_id, field_id" );
 
     $signup_id = $results[0]->signup_id;
@@ -96,8 +94,13 @@ function getSignUpDataFromDatabase($form_id, $year) {
             $return_string .= ';';
             $column_index++;
         }
+
+        if ( (strpos($row->response, ';') !== false) ) {
+            $return_string .= str_replace ( ';' , ', ' , $row->response );
+        } else {
+            $return_string .= $row->response;
+        }
         
-        $return_string .= $row->display_name ?: $row->response;
         $return_string .= ';';
         
         $column_index++;
