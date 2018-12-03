@@ -3,6 +3,7 @@
 Plugin Name: Assö Anmälan
 */
 
+include( plugin_dir_path( __FILE__ ) . 'admin/download-form-data.php');
 include( plugin_dir_path( __FILE__ ) . 'database/get-form-data.php');
 include( plugin_dir_path( __FILE__ ) . 'database/send-form-data.php');
 include( plugin_dir_path( __FILE__ ) . 'forms/build-form.php');
