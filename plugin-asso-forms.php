@@ -123,10 +123,17 @@ add_shortcode('asso-form', function ($atts, $content, $tag) {
         return;
     }
 
-    if (function_exists('formDataValidation') && formDataValidation()) {
-        sendDataToDatabase($atts['form-id'], $atts['year']);
-        echo 'Tack för din anmälan!';
-    } else {
-        createForm($atts['form-id'], $atts['year']);
+    $invalid_fields = [];
+
+    if ( ! empty( $_POST )) {
+        $invalid_fields = formDataValidation($atts['form-id'], $atts['year']);
+
+        if ( empty( $invalid_fields )) {
+            sendDataToDatabase($atts['form-id'], $atts['year']);
+            echo 'Tack för din anmälan!';
+            return;
+        }
     }
+
+    createForm($atts['form-id'], $atts['year'], $invalid_fields);
 });

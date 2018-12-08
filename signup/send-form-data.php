@@ -1,24 +1,23 @@
 <?php
-function formDataValidation() {
-    if ( empty( $_POST) ) {
-        return false;
-    }
-    /*
-    $data = getFormDataFromDatabase();
+function formDataValidation( $form_id, $year ) {
+
+    $invalid_fields = [];
+
+    $data = getFormDataFromDatabase($form_id, $year);
     foreach( $data as $field ) {
         if ( $field['required'] ) {
             if ( empty( $_POST[$field['reference']] ) ) {
-                return false;
+                $invalid_fields[] = $field['reference'];
             }
         }
         if ( ! empty( $field['required_format'] ) ) {
             if ( ! preg_match( $field['required_format'], $_POST[$field['reference']] ) ) {
-                return false;
+                $invalid_fields[] = $field['reference'];
             }
 
         }
-    }*/
-    return true;
+    }
+    return $invalid_fields;
 }
 
 /**

@@ -1,13 +1,17 @@
 <?php
 
-function createForm($form_id, $year) {
+function createForm($form_id, $year, $invalid_fields) {
+    if ( ! empty( $invalid_fields ) ) {
+        echo '<span style="color:red">* Obligatoriskt fält</span>';
+    }
     ?>
-    * Obligatoriskt fält
+
     <form action="" method="post">
         <?php
 
         $data = getFormDataFromDatabase($form_id, $year);
         foreach($data as $field) {
+            createInputTitleElement( $field['title'], $field['required'], in_array($field['reference'], $invalid_fields) );
             if ($field['field_type'] === 'text_input') {
                 createTextInputElement( $field['title'], $field['reference'], $field['placeholder'], $field['required'] );
             }
@@ -41,7 +45,6 @@ function createForm($form_id, $year) {
 }
 
 function createSelectElement( $title, $name, $options, $required ) {
-    createInputTitleElement( $title, $required );
     ?>
     <select name=<?php echo $name; ?>>
         <?php
@@ -56,21 +59,18 @@ function createSelectElement( $title, $name, $options, $required ) {
 }
 
 function createTextInputElement( $title, $name, $place_holder, $required ) {
-    createInputTitleElement( $title, $required );
     $value = isset( $_POST[$name] ) ? htmlspecialchars($_POST[$name]) : '';
     echo '<input type="text" name=' . $name . ' placeholder="' . $place_holder . '" value="' . $value . '">';
     echo '<br>';
 }
 
 function createIntegerInputElement( $title, $name, $place_holder, $required ) {
-    echo $title . ($required ? '*' : '' ) . '<br>';
     $value = isset( $_POST[$name] ) ? htmlspecialchars($_POST[$name]) : '';
     echo '<input type="number" name=' . $name . ' placeholder="' . $place_holder . '" value="' . $value . '">';
     echo '<br>';
 }
 
 function createRadioButtonsElement( $title, $name, $options, $required ) {
-    createInputTitleElement( $title, $required );
     foreach( $options as $option ) {
         $checked = isset( $_POST[$name] ) && $_POST[$name] === $option['value'];
         createSingleRadioButtonElement( $name, $option['value'], $option['display_name'], $checked);
@@ -83,7 +83,6 @@ function createSingleRadioButtonElement( $name, $value, $display_name, $checked 
 }
 
 function createTextAreaElement( $title, $name, $required ) {
-    createInputTitleElement( $title, $required );
     $value = isset( $_POST[$name] ) ? htmlspecialchars($_POST[$name]) : '';
     ?>
     <textarea style="text-align:left; margin:0; width:99%; max-width:250px; height:120px;" 
@@ -95,12 +94,10 @@ function createTextAreaElement( $title, $name, $required ) {
 function creatCheckboxElement( $title, $name, $required ) {
     $checked = isset( $_POST[$name] );
     echo '<input type="checkbox" name=' . $name . ' value=' . 1 . ($checked ? ' checked' : '') . '> ';
-    createInputTitleElement( $title, $required );
     echo '<br>';
 }
 
 function createAllergySelectorElement( $title, $name, $options, $required ) {
-    createInputTitleElement( $title, $required );
     foreach( $options as $option ) {
         $checked = isset( $_POST[$name][$option['value']] );
         createSingleAllergySelectorElement( $name, $option['value'], $option['display_name'], $checked);
@@ -113,6 +110,6 @@ function createSingleAllergySelectorElement( $name, $value, $display_name, $chec
     echo '<br>';
 }
 
-function createInputTitleElement( $title, $field_reqired) {
-    echo $title . ($field_reqired ? '*' : '' ) . '<br>';
+function createInputTitleElement( $title, $field_required, $field_not_valid) {
+    echo $title . ($field_required && $field_not_valid ? '<span style="color:red"> *</span>' : '') . '<br>';
 }
