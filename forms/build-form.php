@@ -105,7 +105,7 @@ function createAllergySelectorElement( $title, $name, $options, $required ) {
 }
 
 function createSingleAllergySelectorElement( $name, $value, $display_name, $checked ) {
-    echo '<input type="checkbox" name=' . $name . '[]' . ' value=' . $display_name . ($checked ? ' checked' : '') . '> ';
+    echo '<input type="checkbox" name=' . $name . '[]' . ' value=' . '"' . $display_name . '"' . ($checked ? ' checked' : '') . '> ';
     echo $display_name;
     echo '<br>';
 }
