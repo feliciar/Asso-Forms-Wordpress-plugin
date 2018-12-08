@@ -59,7 +59,7 @@ function getSignUpDataFromDatabase($form_id, $year, $info_type=null) {
     $table_form_fields_x_options =  $prefix . 'form_fields_x_options';
     $table_option =  $prefix . 'option';
 
-    $info_type_condition = $info_type ? " AND info_type='$info_type'" : "";
+    $info_type_condition = $info_type ? " AND (info_type='$info_type' OR info_type='basic')" : "";
     $form_fields = $wpdb->get_results( "SELECT DISTINCT title, form_field_id FROM $table_singup 
     INNER JOIN $table_forms_x_fields ON $table_singup.form_id=$table_forms_x_fields.form_id
     INNER JOIN $table_form_field ON $table_forms_x_fields.form_field_id=$table_form_field.id

@@ -39,28 +39,6 @@ function download_signup_data_button() {
                     <input type="text" name="filename" value="deltagarlista-sjosport" style="display: none">
                     <input type="hidden" name="form-id" value="2" />
                     <input type="hidden" name="year" value="2019" />
-                    <input type="hidden" name="info-type" value="basic" />
-                    <input type="submit" name="get_csv" value="Sjösport 2019">
-                </form>
-            </tr>
-
-            <tr>
-                <form action="" method="post">
-                    <input type="hidden" name="filename" value="deltagarlista-knatte">
-                    <input type="hidden" name="form-id" value="1" />
-                    <input type="hidden" name="year" value="2019" />
-                    <input type="hidden" name="info-type" value="basic" />
-                    <input type="submit" name="get_csv" value="Knatte 2019">
-                </form>
-            </tr>
-
-            <br><br>
-            <h1>Fullständig anmälningsinformation</h1>
-            <tr>
-                <form action="" method="post">
-                    <input type="text" name="filename" value="anmalningsinfo-sjosport" style="display: none">
-                    <input type="hidden" name="form-id" value="2" />
-                    <input type="hidden" name="year" value="2019" />
                     <input type="hidden" name="info-type" value="" />
                     <input type="submit" name="get_csv" value="Sjösport 2019">
                 </form>
@@ -68,7 +46,7 @@ function download_signup_data_button() {
 
             <tr>
                 <form action="" method="post">
-                    <input type="hidden" name="filename" value="anmalningsinfo-knatte">
+                    <input type="hidden" name="filename" value="deltagarlista-knatte">
                     <input type="hidden" name="form-id" value="1" />
                     <input type="hidden" name="year" value="2019" />
                     <input type="hidden" name="info-type" value="" />
