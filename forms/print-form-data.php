@@ -14,10 +14,12 @@ function outputDataToCSV( $data, $filename ) {
     header("Cache-Control: no-cache, no-store, must-revalidate"); 
     header('Cache-Control: pre-check=0, post-check=0, max-age=0', false); 
     header("Pragma: no-cache");	
-    header("Content-type: text/csv");
+    header("Content-type: text/csv charset=ISO-8859-1");
     header("Content-Disposition:attachment; filename=" . $filename . ".csv");
     header("Content-Type: application/force-download");
+    header('Content-Encoding: ISO-8859-1');
 
-    echo mb_convert_encoding($data, 'UTF-16LE', 'UTF-8');
+    echo mb_convert_encoding($data, 'ISO-8859-1', 'UTF-8');
+
     exit();
 }
