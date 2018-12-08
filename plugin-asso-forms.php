@@ -444,9 +444,7 @@ add_shortcode('asso-form', function ($atts, $content, $tag) {
     if (function_exists('formDataValidation') && formDataValidation()) {
         sendDataToDatabase($atts['form-id'], $atts['year']);
         echo 'Tack för din anmälan!';
-        getSignUpDataFromDatabase($atts['form-id'], $atts['year']);
     } else {
         createForm($atts['form-id'], $atts['year']);
-        getSignUpDataFromDatabase($atts['form-id'], $atts['year']);
     }
 });
