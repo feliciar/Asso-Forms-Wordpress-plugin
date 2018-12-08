@@ -29,17 +29,18 @@ function download_signup_data_button() {
 	}
     ?>
     <div class='wrap'>
-        <h1>Deltagarlistor</h1>
 
         <table class="form-table">
 
             <tbody>
+            <h1>Deltagarlistor</h1>
             <tr>
                 <h2>Sjösport 2019</h2>
                 <form action="" method="post">
                     <input type="text" name="filename" value="deltagarlista-sjosport" style="display: none">
                     <input type="hidden" name="form-id" value="2" />
                     <input type="hidden" name="year" value="2019" />
+                    <input type="hidden" name="info-type" value="basic" />
                     <input type="submit" name="get_csv" value="Ladda ner deltagarlista">
                 </form>
             </tr>
@@ -50,6 +51,7 @@ function download_signup_data_button() {
                     <input type="hidden" name="filename" value="deltagarlista-knatte">
                     <input type="hidden" name="form-id" value="1" />
                     <input type="hidden" name="year" value="2019" />
+                    <input type="hidden" name="info-type" value="basic" />
                     <input type="submit" name="get_csv" value="Ladda ner deltagarlista">
                 </form>
             </tr>

@@ -2,11 +2,11 @@
 
 if ($_POST['get_csv']) {
     // TODO: perform verification and security measures
-    downloadCSV( $_POST['filename'], $_POST['form-id'], $_POST['year'] );
+    downloadCSV( $_POST['filename'], $_POST['form-id'], $_POST['year'], $_POST['info-type'] );
 }
 
-function downloadCSV( $filename, $form_id, $year ) {
-    outputDataToCSV( getSignUpDataFromDatabase($form_id, $year), $filename );
+function downloadCSV( $filename, $form_id, $year, $info_type ) {
+    outputDataToCSV( getSignUpDataFromDatabase($form_id, $year, $info_type), $filename );
 }
 
 function outputDataToCSV( $data, $filename ) {
