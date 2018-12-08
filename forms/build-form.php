@@ -35,7 +35,7 @@ function createForm($form_id, $year) {
         <br>
         
         <!-- TODO: captcha-->
-        <input type="submit">
+        <input type="submit" value="Skicka">
     </form>
     <?
 }
