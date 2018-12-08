@@ -441,15 +441,6 @@ add_shortcode('asso-form', function ($atts, $content, $tag) {
         return;
     }
 
-    ?>
-    <form action="" method="post">
-        <input type="text" name="filename" value="läger" style="display: none">
-        <input type="submit" name="get_csv" value="Ladda ner anmälningsdata">
-    </form>
-    <?php
-
-    echo '<h1>Anmälan</h1>';
-
     if (function_exists('formDataValidation') && formDataValidation()) {
         sendDataToDatabase($atts['form-id'], $atts['year']);
         echo 'Tack för din anmälan!';
