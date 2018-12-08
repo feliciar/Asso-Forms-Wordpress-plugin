@@ -6,7 +6,7 @@ function formDataValidation( $form_id, $year ) {
     $data = getFormDataFromDatabase($form_id, $year);
     foreach( $data as $field ) {
         if ( $field['required'] ) {
-            if ( empty( $_POST[$field['reference']] ) ) {
+            if ( ! isset( $_POST[$field['reference']] ) || $_POST[$field['reference']] === '' ) {
                 $invalid_fields[] = $field['reference'];
             }
         }
@@ -75,7 +75,7 @@ function sendDataToDatabase($form_id, $year) {
         // TODO use a unique id instead of a reference
         $field_reference = $field['reference'];
         $field_id = $wpdb->get_var( $wpdb->prepare("SELECT id FROM `$table_name_form_fields` WHERE `reference` = %s", $field_reference));
-        $response = $_POST[$field_reference] ?: '';
+        $response = isset($_POST[$field_reference]) ? $_POST[$field_reference] : '';
 
         if ( is_array($response ) ) {
             $response = implode(";", $response);
