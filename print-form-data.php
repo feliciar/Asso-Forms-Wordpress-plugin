@@ -2,12 +2,11 @@
 
 if ($_POST['get_csv']) {
     // TODO: perform verification and security measures
-    downloadCSV( $_POST['filename'] );
+    downloadCSV( $_POST['filename'], $_POST['form-id'], $_POST['year'] );
 }
 
-function downloadCSV( $filename ) {
-    $csv_output = "Felicia Rosell, Gårdvägen 9, André Strömsjåäö\nLuïc Karlsson,18245-12456,felcia@hej.hej";
-    outputDataToCSV( getSignUpDataFromDatabase(2, 2019), $filename );
+function downloadCSV( $filename, $form_id, $year ) {
+    outputDataToCSV( getSignUpDataFromDatabase($form_id, $year), $filename );
 }
 
 function outputDataToCSV( $data, $filename ) {
