@@ -99,8 +99,9 @@ function createCheckboxElement( $title, $name, $required ) {
 
 function createAllergySelectorElement( $title, $name, $options, $required ) {
     foreach( $options as $option ) {
-        $checked = $_POST[$name] && in_array( $option['display_name'], $_POST[$name] );
-        createSingleAllergySelectorElement( $name, $option['display_name'], $checked);
+        $display_name = str_replace ( "\xE2\x80\x8B" , '' , $option['display_name'] );
+        $checked = $_POST[$name] && in_array( $display_name, $_POST[$name] );
+        createSingleAllergySelectorElement( $name, $display_name, $checked);
     }
 }
 
