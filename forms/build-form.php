@@ -22,7 +22,7 @@ function createForm($form_id, $year, $invalid_fields) {
                 createTextAreaElement( $field['title'], $field['reference'], $field['required'] );
             }
             if ($field['field_type'] === 'checkbox') {
-                creatCheckboxElement( $field['title'], $field['reference'], $field['required'] );
+                createCheckboxElement( $field['title'], $field['reference'], $field['required'] );
             }
             if ($field['field_type'] === 'radio_buttons') {
                 createRadioButtonsElement( $field['title'], $field['reference'], $field['options'], $field['required'] );
@@ -49,8 +49,8 @@ function createSelectElement( $title, $name, $options, $required ) {
     <select name=<?php echo $name; ?>>
         <?php
         foreach( $options as $option ) {
-            $selected = $_POST[$name] === $option['value'];
-            echo '<option value=' . $option['value'] . ($selected ? ' selected' : '') . '>' . $option['display_name'] . '</option>';
+            $selected = $_POST[$name] === $option['display_name'];
+            echo '<option value=' . $option['display_name'] . ($selected ? ' selected' : '') . '>' . $option['display_name'] . '</option>';
         }
         ?>
     </select>
@@ -72,7 +72,7 @@ function createIntegerInputElement( $title, $name, $place_holder, $required ) {
 
 function createRadioButtonsElement( $title, $name, $options, $required ) {
     foreach( $options as $option ) {
-        $checked = isset( $_POST[$name] ) && $_POST[$name] === $option['value'];
+        $checked = isset( $_POST[$name] ) && $_POST[$name] === $option['display_name'];
         createSingleRadioButtonElement( $name, $option['value'], $option['display_name'], $checked);
     }
     echo '<br>';
@@ -91,7 +91,7 @@ function createTextAreaElement( $title, $name, $required ) {
     <?php
 }
 
-function creatCheckboxElement( $title, $name, $required ) {
+function createCheckboxElement( $title, $name, $required ) {
     $checked = isset( $_POST[$name] );
     echo '<input type="checkbox" name=' . $name . ' value=' . 1 . ($checked ? ' checked' : '') . '> ';
     echo '<br>';
@@ -99,12 +99,12 @@ function creatCheckboxElement( $title, $name, $required ) {
 
 function createAllergySelectorElement( $title, $name, $options, $required ) {
     foreach( $options as $option ) {
-        $checked = isset( $_POST[$name][$option['value']] );
-        createSingleAllergySelectorElement( $name, $option['value'], $option['display_name'], $checked);
+        $checked = $_POST[$name] && in_array( $option['display_name'], $_POST[$name] );
+        createSingleAllergySelectorElement( $name, $option['display_name'], $checked);
     }
 }
 
-function createSingleAllergySelectorElement( $name, $value, $display_name, $checked ) {
+function createSingleAllergySelectorElement( $name, $display_name, $checked ) {
     echo '<input type="checkbox" name=' . $name . '[]' . ' value=' . '"' . $display_name . '"' . ($checked ? ' checked' : '') . '> ';
     echo $display_name;
     echo '<br>';
