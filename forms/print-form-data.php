@@ -9,6 +9,7 @@ function downloadCSV( $filename, $form_id, $year, $info_type ) {
     outputDataToCSV( getSignUpDataFromDatabase($form_id, $year, $info_type), $filename );
 }
 
+//This function takes form-data and put in into a csv-file.
 function outputDataToCSV( $data, $filename ) {
     header("Expires: 0");
     header("Cache-Control: no-cache, no-store, must-revalidate"); 
