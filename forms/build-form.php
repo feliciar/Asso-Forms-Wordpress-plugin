@@ -97,6 +97,9 @@ function createCheckboxElement( $title, $name, $required ) {
     echo '<br>';
 }
 
+/** 
+ * This function creates an number of input checkboxes - an allergy selector.
+*/
 function createAllergySelectorElement( $title, $name, $options, $required ) {
     foreach( $options as $option ) {
         $display_name = str_replace ( "\xE2\x80\x8B" , '' , $option['display_name'] );
