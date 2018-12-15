@@ -105,6 +105,9 @@ function createAllergySelectorElement( $title, $name, $options, $required ) {
     }
 }
 
+/** 
+ * This function creates an input checkbox based on name, display and checked.
+*/
 function createSingleAllergySelectorElement( $name, $display_name, $checked ) {
     echo '<input type="checkbox" name=' . $name . '[]' . ' value=' . '"' . $display_name . '"' . ($checked ? ' checked' : '') . '> ';
     echo $display_name;
