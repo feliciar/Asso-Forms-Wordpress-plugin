@@ -135,5 +135,8 @@ add_shortcode('asso-form', function ($atts, $content, $tag) {
         }
     }
 
+    ob_start();
     createForm($atts['form-id'], $atts['year'], $invalid_fields);
+    $output = ob_get_clean();
+    return $output;
 });
